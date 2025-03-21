@@ -1,1 +1,40 @@
-website
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compile Dolphin to WASM</title>
+</head>
+<body>
+    <h1>Compile Dolphin Emulator to WASM</h1>
+    <button onclick="startCompilation()">Start Compilation</button>
+    <p id="status"></p>
+    <iframe id="emceptionFrame" src="https://jprendes.github.io/emception/" width="100%" height="500px"></iframe>
+    <a id="downloadLink" style="display:none" download>Download Compiled Files</a>
+
+    <script>
+        function startCompilation() {
+            document.getElementById("status").innerText = "Initializing Emception...";
+            const frame = document.getElementById("emceptionFrame");
+            frame.contentWindow.postMessage({action: "compile", repo: "https://github.com/dolphin-emu/dolphin"}, "*");
+        }
+
+        window.addEventListener("message", function(event) {
+            if (event.origin !== "https://jprendes.github.io") return;
+            if (event.data.status === "success") {
+                document.getElementById("status").innerText = "Compilation complete. Downloading files...";
+                fetchCompiledFiles(event.data.outputUrl);
+            } else if (event.data.status === "error") {
+                document.getElementById("status").innerText = "Error: " + event.data.message;
+            }
+        });
+
+        function fetchCompiledFiles(url) {
+            const downloadLink = document.getElementById("downloadLink");
+            downloadLink.href = url;
+            downloadLink.innerText = "Download Compiled Files";
+            downloadLink.style.display = "block";
+        }
+    </script>
+</body>
+</html>
