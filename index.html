@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compile Dolphin to WASM</title>
+    <title>APK Installer</title>
 </head>
 <body>
-    <h1>Compile Dolphin Emulator to WASM</h1>
-    <p>Click the button below to open Emception and compile the Dolphin emulator.</p>
-    <button onclick="openEmception()">Open Emception</button>
-    <p id="status"></p>
+    <h2>APK Installer for Chromebook</h2>
+    <p>Select an APK file to attempt installation:</p>
+    <input type="file" id="apkFile" accept=".apk">
+    <button onclick="installAPK()">Install APK</button>
 
     <script>
-        function openEmception() {
-            document.getElementById("status").innerText = "Opening Emception... Please wait.";
-            window.open("https://jprendes.github.io/emception/");
+        function installAPK() {
+            let fileInput = document.getElementById('apkFile');
+            if (fileInput.files.length === 0) {
+                alert("Please select an APK file.");
+                return;
+            }
+
+            let apkFile = fileInput.files[0];
+            let apkURL = URL.createObjectURL(apkFile);
+
+            // Attempting to open APK (May be blocked on ChromeOS)
+            window.location.href = apkURL;
+
+            alert("If the installation does not start, your Chromebook may block direct APK installs.");
         }
     </script>
 </body>
